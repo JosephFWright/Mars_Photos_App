@@ -19,6 +19,10 @@ package com.example.android.marsphotos.overview
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.android.marsphotos.network.MarsApiService
+import kotlinx.coroutines.launch
+import java.lang.Exception
 
 /**
  * The [ViewModel] that is attached to the [OverviewFragment].
@@ -42,6 +46,12 @@ class OverviewViewModel : ViewModel() {
      * [MarsPhoto] [List] [LiveData].
      */
     private fun getMarsPhotos() {
-        _status.value = "Set the Mars API status response here!"
+        viewModelScope.launch {
+            try{
+                val listResult = MarsApiService.MarsApi.retrofitService.getPhotos()
+                _status.value = "SUCCESS: ${listResult.size} Mars photos retrieved" }
+            catch (e: Exception) { _status.value = "FAILURE: ${e.message}" }
+
+        }
     }
 }
